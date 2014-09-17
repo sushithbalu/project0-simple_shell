@@ -21,7 +21,7 @@ int PipRedirnCheck(char *);
 
 int main(int argc, char **argv)
 {
-	int myargc, i, found, fg;
+	int myargc, found;
 	char array[BUFSIZE] = "";
 	char *myargv[MAXW];
 	char *ptr;
@@ -54,7 +54,7 @@ int main(int argc, char **argv)
 
 void forkexec( int arc, char *argv[])
 {
-	int i, fd;
+	int fd;
 
 	fd = fork();
 	if(fd == -1)
@@ -125,9 +125,10 @@ void pipefun(int p[], char *argp1[], char *argp2[])
 	}
 
 }
+
 void rednfun(char *arg1[], char *arg2[])
 {
-	int i, fd, fdw;
+	int fd, fdw;
 	fdw = open(arg2[0], O_WRONLY|O_CREAT|O_TRUNC, 0644);
 	fd = fork();
 	if(fd == -1)
@@ -184,6 +185,6 @@ void initclear(char *argv[])
 {
 	int i;
 	for(i = 0; i < MAXW; i++){
-		argv[i] == NULL;
+		argv[i] = NULL;
 	}
 }
