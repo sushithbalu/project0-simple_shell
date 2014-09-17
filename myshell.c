@@ -25,8 +25,8 @@ int main(int argc, char **argv)
 	char array[BUFSIZE] = "";
 	char *myargv[MAXW];
 	char *ptr;
-	char *dlm1 = " \n\t,;";
-	char *dlm2 = " |>\n\t,;";
+	char *dlm1 = "	    \n\t,;";
+	char *dlm2 = "	    |>\n\t,;";
 
 	initclear(myargv);/*imp*/
 	found = NO;
@@ -61,7 +61,7 @@ void forkexec( int arc, char *argv[])
 		errxt("fork");
 	if(fd == 0){
 		execvp(argv[0], argv);
-		errxt("execvepn");
+		errxt("execvpn");
 	} else {
 		wait(NULL);
 	}
@@ -102,35 +102,45 @@ void foundPiporRedirn(int arc, char *arg[])
 
 void pipefun(char *argp1[], char *argp2[])
 {
-	pid_t fd;
-	int p[2];
+	int fd1, fd2, p[2], status;
 
 	if(pipe(p) == -1) 
 		errxt("pipe");
-	fd = fork();
-	if(fd == -1)
+	fd1 = fork();
+	if(fd1 == -1)
 		errxt("fork");
-	if(fd == 0) {
+	if(fd1 == 0) {
 		close(1); /*close normal stdout*/
 		dup(p[1]);
 		close(p[0]);
 		execvp(argp1[0], argp1);
-		errxt("execvp1");
-		wait(NULL);
-	} else {
-		close(0); /*close normal stdin*/ /*may be something else*/
-		dup(p[0]);
 		close(p[1]);
-		execvp(argp2[0], argp2);
-		errxt("execvp2");
+		exit(EXIT_SUCCESS);
+	} else {
+		fd2 = fork();
+		if(fd2 == -1)
+			errxt("fork");
+		if(fd2 == 0){
+			close(0); /*close normal stdin*/
+			dup(p[0]);
+			close(p[1]);
+			execvp(argp2[0], argp2);
+			close(p[0]);
+			exit(EXIT_SUCCESS);
+		} else {
+			close(p[0]);
+			close(p[1]);
+			wait(&status);
+			wait(NULL);
+		}
 	}
-
 }
 
 void rednfun(char *arg1[], char *arg2[])
 {
 	int fd, fdw;
-	fdw = open(arg2[0], O_WRONLY|O_CREAT|O_TRUNC, 0644);
+
+	fdw = open(arg2[0], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	fd = fork();
 	if(fd == -1)
 		errxt("fork");
