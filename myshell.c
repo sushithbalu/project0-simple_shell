@@ -13,7 +13,7 @@
 void forkexec(int, char *[]);
 int parsarg(char [], char *, int , char *[]);
 void foundPiporRedirn(int , char *[]);
-void pipefun(int [], char *[] , char *[]);
+void pipefun(char *[], char *[]);
 void rednfun(char *[], char *[]);
 void errxt(char *);
 void initclear(char *[]);
@@ -69,7 +69,7 @@ void forkexec( int arc, char *argv[])
 
 void foundPiporRedirn(int arc, char *arg[])
 {
-        int  i, k, found, fp = 0, pipe[2];
+        int  i, k, found, fp = 0;
 	char *arg1[MAXW];
 	char *arg2[MAXW];
 	
@@ -93,16 +93,17 @@ void foundPiporRedirn(int arc, char *arg[])
 
 	for(i = 0; i < arc; i++){
 		if(strcmp(arg[i], "|") == 0){
-			pipefun(pipe, arg1, arg2);
+			pipefun(arg1, arg2);
 		} else if(strcmp(arg[i], ">") == 0){
 			rednfun(arg1, arg2);
 		}
 	}
 }
 
-void pipefun(int p[], char *argp1[], char *argp2[])
+void pipefun(char *argp1[], char *argp2[])
 {
 	pid_t fd;
+	int p[2];
 
 	if(pipe(p) == -1) 
 		errxt("pipe");
