@@ -1,1 +1,7 @@
-recursive labs project-1
+_course project_
+	simple shell implimentation using C.
+
+this shell perfoms:
+	-> All basic commands
+	-> Redirection
+	-> Pipeline
